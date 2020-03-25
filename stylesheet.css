@@ -1,0 +1,76 @@
+body{
+  font-family: "Verdana", sans-serif;
+  padding: 25px;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.refinements{
+  padding: 20px 0;
+  width: 15%;
+}
+
+.rings-material:before{
+  display: block;
+  content:attr(aria-label);
+  font-size:120%;
+  font-weight:bold;
+  margin-left:-15px;
+}
+
+.rings-gender:before{
+  display: block;
+  content:attr(aria-label);
+  font-size: 120%;
+  font-weight:bold;
+  margin-left:-15px;
+}
+
+.rings-stone-type:before{
+  display: block;
+  content:attr(aria-label);
+  font-size:120%;
+  font-weight:bold;
+  margin-left:-15px;
+}
+
+.rings-price:before{
+  display: block;
+  content:attr(aria-label);
+  font-size:120%;
+  font-weight:bold;
+  margin-left:-15px;
+}
+
+.ring-images {
+  display: flex;
+  flex-wrap: wrap;
+  width: 85%;
+}
+
+.ring-images > li {
+  text-align: center;
+  width: 50%;
+}
+
+li > img {
+  display: block;
+  margin: 0 auto;
+  width: 150px;
+}
+
+.hidden {
+  display: none;
+}
+
+.show{
+  display: block;
+}
