@@ -1,140 +1,151 @@
 $(function(){
-
-const $ringImages = $('.ring-images');
-const $filterCheckboxes = $('input[type="checkbox"]');
-const url = window.location.href;    
-
-$.ajax({
-  type: 'GET',
-  url: 'https://quiet-reef-23667.herokuapp.com/rings',
-  success: function(rings) {
-    $.each(rings, function(i, ring){
-      $ringImages.append(`
-      <li class="ring-image" data-id="${ring.title}" data-category="${ring.gender} ${ring.material} ${ring.stoneType}">
-        <img src=${ring.img}>
-        ${ring.title}
-      </li>
-      `) 
-    })
-  },
-  error: function(){
-    console.log('error loading images')
-  }
-});
-
-$filterCheckboxes.on('change', function() {
+  const $ringImages = $('.ring-images');
+  const $filterCheckboxes = $('input[type="checkbox"]'); 
+  const $filterLinks = $('.ring-price');
   const selectedFilters = {};
-  $filterCheckboxes.filter(':checked').each(function() {
-    if (!selectedFilters.hasOwnProperty(this.name)) {
-      selectedFilters[this.name] = [];
+  const dataFilters = {}
+
+  $.ajax({
+    type: 'GET',
+    url: 'https://quiet-reef-23667.herokuapp.com/rings',
+    success: function(rings) {
+      $.each(rings, function(i, ring){
+        $ringImages.append(`
+        <li class="ring-image" data-id="${ring.title}" data-category="${ring.gender} ${ring.material} ${ring.stoneType}">
+          <img src=${ring.img}>
+          ${ring.title}
+        </li>
+        `) 
+      })
+    },
+    error: function(){
+      console.log('error loading images')
     }
-    selectedFilters[this.name].push(this.value);
   });
 
-  let $filteredResults = $('.ring-image');
-    $.each(selectedFilters, function(i, filterValues) {
-      $filteredResults = $filteredResults.filter(function() {
-        let matched = false,
-          currentFilterValues = $(this).data('category').split(' ');
-        $.each(currentFilterValues, function(i, currentFilterValue) {
-          if ($.inArray(currentFilterValue, filterValues) !== -1) {
-            matched = true;
-            // return false;
-          }
-        });
-        return matched;
-      });
+
+  $($filterCheckboxes, $filterLinks).on('change', function(e) {
+    $filterCheckboxes.filter(':checked').each(function() {
+      if (!selectedFilters.hasOwnProperty(this.name)) {
+        selectedFilters[this.name] = [];
+      }
+      selectedFilters[this.name].push(this.value);
+      console.log(this.name, this.value)
+      console.log(selectedFilters, "from checkbox")
+      dataFilters[this.name] = this.value; 
+      
     });
-    console.log($filteredResults)
-    $('.ring-image').hide().filter($filteredResults).show();
+      console.log('clicked')
+    $.ajax({
+      type: 'GET',
+      url: `https://quiet-reef-23667.herokuapp.com/rings?`,
+      data: dataFilters,
+      success: function() {
+        let url = this.url;
+        let newUrl = url.substring(url.lastIndexOf("?") + 1);
+        window.location.hash = newUrl
+        let $filteredResults = $('.ring-image');
+        $.each(selectedFilters, function(i, filterValues) {
+          $filteredResults = $filteredResults.filter(function() {
+            let matched = false,
+              currentFilterValues = $(this).data('category').split(' ');
+            $.each(currentFilterValues, function(i, currentFilterValue) {
+              if ($.inArray(currentFilterValue, filterValues) !== -1) {
+                matched = true;
+              }
+            });
+            return matched;
+          });
+        });
+        $('.ring-image').hide().filter($filteredResults).show();
+      },
+      error: function(){
+        console.log('error loading images')
+      }
+    });
+
   });
+
 })
 
-//post user
-// $('#add-user').on('click', function() {
-//   console.log('clicked')
-//   const user = {
-//       name: $name.val()
-//   };
+
+          // for(let [key, value] of Object.entries(dataFilters)){
+          //   let refinementCategory = key;
+          //   let refinementValue = value;
+          //   window.history.pushState({refinementCategory}, ' ', `${refinementCategory}=${refinementValue}`)
+          // }
+// $(function(){
+
+// const $ringImages = $('.ring-images');
+// const $filterCheckboxes = $('input[type="checkbox"]'); 
+
 //   $.ajax({
-//     url: "https://reqres.in/api/users",
-//     type: "POST",
-//     data: user,
-//     success: function(newUser){
-//       $users.append(`<li>${newUser.name}</li>`)
+//     type: 'GET',
+//     url: 'https://quiet-reef-23667.herokuapp.com/rings',
+//     success: function(rings) {
+//       $.each(rings, function(i, ring){
+//         $ringImages.append(`
+//         <li class="ring-image" data-id="${ring.title}" data-category="${ring.gender} ${ring.material} ${ring.stoneType}">
+//           <img src=${ring.img}>
+//           ${ring.title}
+//         </li>
+//         `) 
+//       })
 //     },
-//     error: function() {
-//       alert('error saving order')
+//     error: function(){
+//       console.log('error loading images')
 //     }
 //   });
-// });
-
-//get single user
-// $('#users').on('click', '#user-checkbox', function(user) {
-//   if("input:focus"){
-//     $.each(users.data, function(i, user){
-//       $.ajax({
-//         type: 'GET',
-//         url: `https://reqres.in/api/users/${user.id}`,
-//         success: function(users){
-//           $.each(users.data, function(i, user){
-//             $userAvatar.append(`<img src=${user.avatar} alt=${user.first_name}>`)
-//           })
+  
+//   $filterCheckboxes.on('change', function() {
+//     const selectedFilters = {};
+//     const dataFilters = {}
+//     if($filterCheckboxes.is(':checked')){
+//       $filterCheckboxes.filter(':checked').each(function() {
+//         if (!selectedFilters.hasOwnProperty(this.name)) {
+//           selectedFilters[this.name] = [];
 //         }
-//       })
+//         selectedFilters[this.name].push(this.value);
+//         dataFilters[this.name] = this.value; 
 
-//     })
-//   }
-// });  
+//         $.ajax({
+//           type: 'GET',
+//           data: dataFilters,
+//           url: `https://quiet-reef-23667.herokuapp.com/rings?`,
+//           success: function(rings) {
+//             let $filteredResults = $('.ring-image');
+//             for(let [key, value] of Object.entries(dataFilters)){
+//               let refinementCategory = key;
+//               let refinementValue = value;
+//               console.log(dataFilters)
+//               $.each(dataFilters, function(i){
+//                 window.history.pushState({refinementCategory}, ' ', `${refinementCategory}=${refinementValue}`, )
+//                 console.log(`History.state before pushState: ${history.state}`)
+//               })
+//             }
 
+//             $.each(selectedFilters, function(i, filterValues) {
+//               $filteredResults = $filteredResults.filter(function() {
+//                 let matched = false,
+//                   currentFilterValues = $(this).data('category').split(' ');
+//                 $.each(currentFilterValues, function(i, currentFilterValue) {
+//                   if ($.inArray(currentFilterValue, filterValues) !== -1) {
+//                     matched = true;
+//                   }
+//                 });
+//                 return matched;
+//               });
+//             });
+//             $('.ring-image').hide().filter($filteredResults).show();
+//           },
+//           error: function(){
+//             console.log('error loading images')
+//           }
+//         });
+//     });
+//     //end of if checked
+//    } else {
 
-
-// $('.user-checkbox').change(function(){
-//   const id = $(this).data('id');
-//   let selectedArray = [];
-//   const selectedUser = users[0].data.filter(function(user){
-//     return user.id === id;
+//    }
 //   })
-//   const element = $userAvatars.find(`img[data-id=${selectedUser[0].id}]`);
-//   console.log(element)
-//   if($(this).is(':checked')){
-//     $('.avatar').not(element).addClass('hidden')
-//     $email.html(selectedUser[0].email)
-//   } else {
-//     $('.avatar').removeClass('hidden')
-//     $email.html('')
-//   }
 // })
-
-
-
-// users.forEach(function(user){
-//   user.data.map(function(u, i){
-//     $users.append(`
-//       <li>
-//       <label>
-//       <input type="checkbox" data-id=${u.id} class="user-checkbox">
-//       ${u.first_name}
-//       </label>
-//       </li>`)
-//     $userAvatars.append(`<img data-category=0
-//      alt=${u.first_name} class="avatar" src=${u.avatar}></img>`)
-//   })
-// });
-
-// $('.user-checkbox').change(function(){
-//   const id = $(this).data('id');
-//   let selectedArray = [];
-//   const selectedUser = users[0].data.filter(function(user){
-//     return user.id === id;
-//   })
-//   const element = $userAvatars.find(`img[data-id=${selectedUser[0].id}]`);
-//   selectedArray.push(element);
-//   let selectedId = $userAvatars.filter()
-//   if($(this).is(':checked')){
-//     $('.avatar').not(element).addClass('hidden')
-//     $email.html(selectedUser[0].email)
-//   } else {
-//     $('.avatar').removeClass('hidden')
-//     $email.html('')
-//   }
