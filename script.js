@@ -22,7 +22,6 @@ $(function(){
     }
   });
 
-
   $filterCheckboxes.on('change', function(e) {
     $filterCheckboxes.filter(':checked').each(function() {
       if (!selectedFilters.hasOwnProperty(this.name)) {
