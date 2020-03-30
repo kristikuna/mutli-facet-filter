@@ -28,12 +28,10 @@ $(function () {
         </li>
         `)
       })
-
     },
     error: function () {
       console.log('error loading images')
     }
-
   });
 
 
@@ -45,7 +43,6 @@ $(function () {
         selectedFilters[this.name] = [];
       }
       selectedFilters[this.name].push(checkValue.value);
-
     })
     getNewItems(selectedFilters)
   });
@@ -61,24 +58,19 @@ $(function () {
       data: data,
       success: function () {
         let url = this.url;
-
         let newUrl = url.substring(url.lastIndexOf("?"));
-
         window.location.hash = newUrl
         window.history.pushState({}, null, newUrl)
-
         let $filteredResults = $('.ring-image');
         $.each(selectedFilters, function (i, filterValues) {
           $filteredResults = $filteredResults.filter(function () {
             let matched = false,
               currentFilterValues = $(this).data('category').split(' ');
             $.each(currentFilterValues, function (i, currentFilterValue) {
-
               if ($.inArray(currentFilterValue, filterValues) !== -1) {
                 matched = true;
               }
             });
-
             return matched;
           });
         });
@@ -88,9 +80,6 @@ $(function () {
         console.log('error loading images')
       }
     });
-
   }
-
-
 })
 
