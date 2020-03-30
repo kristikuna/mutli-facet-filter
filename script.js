@@ -2,7 +2,7 @@ $(function () {
   const $ringImages = $('.ring-images');
   const $filterCheckboxes = $('input[type="checkbox"]');
   const $filterLinks = $('.ring-price');
-  selectedFilters = {};
+  let selectedFilters = {};
   const urlParams = new URLSearchParams(window.location.search);
   const urlParamsString = urlParams.toString();
 
@@ -22,7 +22,7 @@ $(function () {
     success: function (rings) {
       $.each(rings, function (i, ring) {
         $ringImages.append(`
-        <li class="ring-image" data-id="${ring.title}" data-category="${ring.gender} ${ring.material} ${ring.stone}">
+        <li class="ring-image" data-id="${ring.title}" data-category="${ring.gender} ${ring.material} ${ring.stone} ${ring.price}">
           <img src=${ring.img}>
           ${ring.title}
         </li>
@@ -33,8 +33,6 @@ $(function () {
       console.log('error loading images')
     }
   });
-
-
 
   $($filterCheckboxes, $filterLinks).on('change', function (e) {
     selectedFilters = {};
@@ -47,7 +45,16 @@ $(function () {
     getNewItems(selectedFilters)
   });
 
-
+  $filterLinks.click(function(e){
+    e.preventDefault();
+    let filterLinkValue = $(this).attr('value');
+    let filterLinkName = $(this).attr('name')
+    if(!selectedFilters.hasOwnProperty(this.value)){
+      selectedFilters[this.name] = [];
+    }
+    selectedFilters[filterLinkName].push(filterLinkValue)
+    getNewItems(selectedFilters)
+  })
 
   function getNewItems(dataFilters) {
     let data = dataFilters
