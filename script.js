@@ -45,17 +45,6 @@ $(function () {
     getNewItems(selectedFilters)
   });
 
-  $filterLinks.click(function(e){
-    e.preventDefault();
-    let filterLinkValue = $(this).attr('value');
-    let filterLinkName = $(this).attr('name')
-    if(!selectedFilters.hasOwnProperty(this.value)){
-      selectedFilters[this.name] = [];
-    }
-    selectedFilters[filterLinkName].push(filterLinkValue)
-    getNewItems(selectedFilters)
-  })
-
   function getNewItems(dataFilters) {
     let data = dataFilters
 
